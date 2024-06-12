@@ -1,0 +1,40 @@
+from __future__ import unicode_literals
+import os
+import traceback
+import tanium  
+
+
+
+def sensor_main():
+    log_directory_files = os.scandir(r'/Library/Application Support/Zscaler/') if os.path.exists(r'/Library/Application Support/Zscaler/') else None
+    #log_directory_files = os.scandir(os.getcwd())
+
+    if not log_directory_files:
+        return "Zscaler directory doesn't exist in Application Support" 
+
+    log_directory_files = [x for x in log_directory_files if x.name.startswith("ztstatus_") and x.name.endswith(".log")]
+
+    if not log_directory_files:
+        return "Zscaler log file doesn't exist in Zscaler directory"
+
+    network_type_logs = open(f"/Library/Application Support/Zscaler/{log_directory_files[0].name}", 'r', encoding='utf-8').readlines()
+    
+    n = network_type_logs[11]
+    net=n[9:10]
+
+
+    if not network_type_logs:
+        return f"Unable to find relevant logs in Zscaler log files"
+    return net
+    
+
+
+if __name__ == "__main__":
+    try:
+        result = sensor_main()
+
+        print(result, flush=True)
+        tanium.results.add(result)  
+
+    except Exception as error:
+        tanium.results.add(f"TSE Error: {error}")
