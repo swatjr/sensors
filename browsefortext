@@ -1,0 +1,28 @@
+from __future__ import unicode_literals
+import os
+import traceback
+import tanium 
+
+
+
+def sensor_main():
+    givenString = "comply.assessment"       
+    data = []
+    with open(f"C:/Program Files (X86)/Tanium/Tanium Client/Logs/extensions0.txt", 'r') as filedata:
+  
+        for line in filedata:
+   
+            if givenString in line:
+
+               data.append(line)
+        return (data)
+
+if __name__ == "__main__":
+    try:
+        result = sensor_main()
+
+        print(result, flush=True)
+        tanium.results.add(result)  
+
+    except Exception as error:
+        tanium.results.add(f"TSE Error: {error}")
